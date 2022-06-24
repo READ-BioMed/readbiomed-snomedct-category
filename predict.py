@@ -12,7 +12,7 @@ print("loaded")
 def get_ids(term):
     ids = []
 
-    answer = requests.request('GET', "https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-default&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(term)).json()
+    answer = requests.request('GET', "https://r4.ontoserver.csiro.au/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-default;automapstrategy-MML&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(term)).json()
 
     for i in answer['parameter']:
         if i['name'] == 'match':
@@ -33,4 +33,4 @@ def get_category(term):
 
 
 for i in tqdm(range(1)):
-    print(get_category('flu'))
+    print(get_category('covid'))
