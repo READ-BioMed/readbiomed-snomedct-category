@@ -44,3 +44,9 @@ It is possible to test the data sets against Ontoserver output
 ```
 python predict.py
 ```
+
+It is possible to annotate a CSV file and generate a prediction Excel file running
+
+```
+python process.py
+```
