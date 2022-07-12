@@ -2,6 +2,7 @@ import json
 import jsonpickle
 import requests
 from tqdm import tqdm
+import urllib.parse
 
 
 class Category():
@@ -22,8 +23,13 @@ class Category():
     def get_ids(self, term):
         ids = []
 
-        answer = requests.request('GET', "{}/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-default;automapstrategy-MML&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(self.ontoserver_prefix, term)).json()
+        answer = requests.request('GET', "{}/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-default;automapstrategy-MML&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(
+            self.ontoserver_prefix, urllib.parse.quote(term))).json()
 
+        #print ("{}/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-default;automapstrategy-MML&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(
+        #    self.ontoserver_prefix, urllib.parse.quote(term)))
+
+        print(term, answer)
         for i in answer['parameter']:
             if i['name'] == 'match':
                 for c in i['part']:
@@ -33,19 +39,25 @@ class Category():
         return ids
 
     def get_category(self, term):
+        term = str(term)
+
         if term.lower() in self.predefined:
-            return self.predefined[term.lower()]
+            return (term, self.predefined[term.lower()])
 
         ids = self.get_ids(term)
+        print("ids", ids)
 
         for id in ids:
             if id in self.hp:
-                if len(self.hp[id]) > 0:
-                    return sorted(self.hp[id].items(), key=lambda x: x[1], reverse=True)
+                print (id, self.hp[id])
+                if len(self.hp[id]) > 0 and self.hp[id] is not None:
+                    return (term, sorted(self.hp[id].items(), key=lambda x: x[1], reverse=True))
+
+        return (term, None)
 
 
 if __name__ == "__main__":
-    predict = Category()
+    predict = Category("http://0.0.0.0:8080")
 
     for i in tqdm(range(1)):
-        print(predict.get_category('imaging'))
+        print(predict.get_category('glaucoma'))
