@@ -8,7 +8,6 @@ import xlsxwriter
 
 from predict import Category
 
-#category = Category(ontoserver_prefix="http://0.0.0.0:8080")
 category = Category(ontoserver_prefix="http://100.100.0.4:8080")
 
 
@@ -71,7 +70,7 @@ def write_results(mappings, xlsx_file_name='./output/prediction.xlsx'):
 
 if __name__ == "__main__":
     #df = pd.read_csv('./input/Reasons_Freq.csv')
-    df = pd.read_csv('./input/Reasons_Freq.csv.orig')
+    df = pd.read_csv('./input/Reasons_Freq.csv')
     #df = pd.read_csv('/MCRI/input/Reasons_Freq.csv')
 
     print('Annotating terms...')

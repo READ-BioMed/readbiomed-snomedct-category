@@ -3,10 +3,10 @@ import jsonpickle
 from tqdm import tqdm
 
 # Identify the closest ancestor from a set of candidates
-with open('./snomedct2cui.json', 'r') as f:
+with open('./data/snomedct2cui.json', 'r') as f:
     c = json.load(f)
 
-with open('../mcri-rfv/data/direct_main_codes.json', 'r') as f:
+with open('./data/direct_main_codes.json', 'r') as f:
     codes = json.load(f)
 
 categories = {}
@@ -21,7 +21,7 @@ for k, v in codes.items():
             categories[k].append(c[sn])
 
 
-with open('./snomedct2hierarchy.json', 'r') as f:
+with open('./data/snomedct2hierarchy.json', 'r') as f:
     h = jsonpickle.decode(json.load(f))
 
 
@@ -81,5 +81,5 @@ for k, v in tqdm(c.items()):
         if path_length > 0:
             concept2closest[k][k1] = path_length
 
-with open('./snomedct2path.json', 'w') as f:
+with open('./data/snomedct2path.json', 'w') as f:
     json.dump(jsonpickle.encode(concept2closest), f)

@@ -13,8 +13,7 @@ class Category():
         return term.lower().replace("-", " ")
 
     def get_predefined(self):
-        # with open('/Users/E114560/Documents/git/mcri-rfv/data/direct_all_possible_reasons_and_synonyms.json', 'r') as f:
-        with open('/MCRI/data/direct_all_possible_reasons_and_synonyms.json', 'r') as f:
+        with open('./data/direct_all_possible_reasons_and_synonyms.json', 'r') as f:
             predefined = json.load(f)
 
         return {self.normalise_pre_term(term): k for k, v in predefined.items() for term in v}
@@ -107,7 +106,6 @@ class Category():
 
 if __name__ == "__main__":
     logging.basicConfig(level=logging.DEBUG)
-    #predict = Category("http://0.0.0.0:8080")
     predict = Category("http://100.100.0.4:8080")
 
     for i in tqdm(range(100)):
