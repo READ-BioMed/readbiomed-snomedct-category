@@ -2,5 +2,5 @@
 cd /metamap/public_mm
 ./bin/skrmedpostctl start
 
-cd /MCRI/src
+cd /MCRI
 python3 process.py
