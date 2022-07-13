@@ -79,22 +79,26 @@ class Category():
         return terms
 
     def get_category(self, term):
-        logging.debug("Processing {}".format(term))
+        try:
+            logging.debug("Processing {}".format(term))
 
-        if term in self.category_cache:
-            return (term, self.category_cache[term])
+            if term in self.category_cache:
+                return (term, self.category_cache[term])
 
-        category = self.get_category_ontoserver(term)
+            category = self.get_category_ontoserver(term)
 
-        if category is None:
-            for mterm in self.get_terms(term):
-                category = self.get_category_ontoserver(mterm)
+            if category is None:
+                for mterm in self.get_terms(term):
+                    category = self.get_category_ontoserver(mterm)
 
-                if category is not None:
-                    break
+                    if category is not None:
+                        break
 
-        self.category_cache[term] = category
-        return (term, category)
+            self.category_cache[term] = category
+            return (term, category)
+        except:
+            logging.debug("Error processing {}".format(term))
+            return (term, None)
 
     def get_category_ontoserver(self, term):
         try:
