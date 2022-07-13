@@ -16,7 +16,7 @@ RUN apt-get -qq update && \
 
 RUN pip3 install cython 
 RUN pip3 install numpy
-RUN pip3 install xlsxwriter requests pymetamap jsonpickle tqdm
+RUN pip3 install xlsxwriter requests pymetamap jsonpickle tqdm pandas
 
 RUN git clone https://github.com/READ-BioMed/readbiomed-snomedct-category.git MCRI
 
@@ -26,10 +26,10 @@ COPY public_mm_linux_main_2020.tar.bz2 $METAMAP
 WORKDIR $METAMAP
 RUN tar xvfj public_mm_linux_main_2020.tar.bz2
 
-COPY setup.sh $METAMAP
-COPY start.sh $HOME_MCRI
+COPY setup-metamap.sh $METAMAP
+COPY process.sh $HOME_MCRI
 WORKDIR $METAMAP/public_mm
-RUN /bin/bash -c '../setup.sh'
-RUN chmod +x $HOME_MCRI/start.sh
+RUN /bin/bash -c 'sh ../setup-metamap.sh'
+RUN chmod +x $HOME_MCRI/process.sh
 WORKDIR $HOME_MCRI
 

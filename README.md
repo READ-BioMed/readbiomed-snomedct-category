@@ -15,7 +15,7 @@ docker network create  --driver=bridge   --subnet=100.100.0.0/16   --gateway=100
 Start the ontoserver docker
 
 ```
-docker-compose up -d -f docker-compose-ontoserver.yml
+docker-compose -f docker-compose-ontoserver.yml up -d
 ```
 
 Update the SNOMED CT ontology
@@ -27,7 +27,7 @@ docker exec ontoserver /index.sh -s sctau
 ### Build the application docker
 
 ```
-docker build  --no-cache -t readbiomed/mcri_rfv .
+docker build --no-cache -t readbiomed/mcri_rfv_matrix .
 ```
 
 ### Start the application docker
@@ -41,14 +41,18 @@ bash start-application-docker.sh $INPUT $OUTPUT
 ### Process data using the application in docker
 
 ```
-docker exec -it rfv_predict bash process.sh
+docker exec -it rfv_process bash process.sh
 ```
 
 ## Data generation - required if data needs to be updated
 
 
 Download the UMLS Metathesaurus and install, we have tested UMLS 2020AA.
-When installing the UMLS, you need to ensure that SNOMED CT is installed.
+
+When installing the UMLS, you need to ensure that SNOMED CT is installed as one of the sources.
+
+Copy MRCONSO.RRF and MRREL.RFF to the data folder.
+
 
 ```
 pip install jsonpickle
