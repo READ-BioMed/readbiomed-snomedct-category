@@ -74,8 +74,13 @@ if __name__ == "__main__":
     #df = pd.read_csv('/MCRI/input/Reasons_Freq.csv')
 
     print('Annotating terms...')
-    mappings = process_map(category.get_category, df.Var1,
-                           max_workers=1, chunksize=10)
+
+    mappings=[]
+
+    for term in tqdm(df.Var1):
+      mappings.append(category.get_category(term))
+
+    category.save_cache()
 
     print('Writing results to xlsx file')
     write_results(mappings)

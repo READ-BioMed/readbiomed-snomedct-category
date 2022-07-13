@@ -18,15 +18,27 @@ class Category():
 
         return {self.normalise_pre_term(term): k for k, v in predefined.items() for term in v}
 
+    def save_cache(self):
+        with open('./data/cache.json', 'w') as f:
+            json.dump(jsonpickle.encode(self.category_cache), f)
+
+
     def __init__(self, ontoserver_prefix="https://r4.ontoserver.csiro.au"):
-        with open('./snomedct2path.json', 'r') as f:
+        with open('./data/snomedct2path.json', 'r') as f:
             self.hp = jsonpickle.decode(json.load(f))
             self.predefined = self.get_predefined()
             self.ontoserver_prefix = ontoserver_prefix
         self.mm = SubprocessBackend("/metamap/public_mm/bin/metamap20")
 
+
+        try:
+            with open('./data/cache.json', 'r') as f:
+                self.category_cache = jsonpickle.decode(json.load(f))
+        except:
+            logging.debug('Regenerating the cache')
+            self.category_cache = {}
+
         self.onto_cache = {}
-        self.category_cache = {}
 
         logging.info("Resources loaded")
 
@@ -85,21 +97,24 @@ class Category():
         return (term, category)
 
     def get_category_ontoserver(self, term):
-        term = str(term)
+        try:
+            term = str(term)
 
-        if self.normalise_pre_term(term) in self.predefined:
-            output = self.predefined[self.normalise_pre_term(term)]
-            logging.debug("Found term {} in {}".format(
-                self.normalise_pre_term(term), output))
-            return output
+            if self.normalise_pre_term(term) in self.predefined:
+                output = self.predefined[self.normalise_pre_term(term)]
+                logging.debug("Found term {} in {}".format(
+                    self.normalise_pre_term(term), output))
+                return output
 
-        ids = self.get_ids(term)
+            ids = self.get_ids(term)
 
-        for id in ids:
-            if id in self.hp:
-                logging.debug("Id {} found {}".format(id, self.hp[id]))
-                if len(self.hp[id]) > 0 and self.hp[id] is not None:
-                    return sorted(self.hp[id].items(), key=lambda x: x[1], reverse=True)
+            for id in ids:
+                if id in self.hp:
+                    logging.debug("Id {} found {}".format(id, self.hp[id]))
+                    if len(self.hp[id]) > 0 and self.hp[id] is not None:
+                        return sorted(self.hp[id].items(), key=lambda x: x[1], reverse=True)
+        except:
+            logging.debug("Error processing {}".format(term))
 
         return None
 
