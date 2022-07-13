@@ -24,10 +24,10 @@ Update the SNOMED CT ontology
 docker exec ontoserver /index.sh -s sctau
 ```
 
-### Build the application docker
+### Pull the application docker
 
 ```
-docker build --no-cache -t readbiomed/mcri_rfv_matrix .
+docker pull readbiomed/mcri_rfv_matrix:latest
 ```
 
 ### Start the application docker
