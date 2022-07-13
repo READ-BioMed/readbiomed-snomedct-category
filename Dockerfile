@@ -16,7 +16,7 @@ RUN apt-get -qq update && \
 
 RUN pip3 install cython 
 RUN pip3 install numpy
-RUN pip3 install xlsxwriter requests pymetamap jsonpickle
+RUN pip3 install xlsxwriter requests pymetamap jsonpickle tqdm
 
 RUN git clone https://github.com/READ-BioMed/readbiomed-snomedct-category.git MCRI
 

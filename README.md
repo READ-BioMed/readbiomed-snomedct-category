@@ -1,6 +1,8 @@
-# Create a matrix with the closest concept category using a set of predefined categories
+# Reason annotation
 
 ## Installation
+
+### Log into quay.io -- required to download the ontoserver
 
 ### Set up the network
 
@@ -26,20 +28,22 @@ docker exec ontoserver /index.sh -s sctau
 
 ### Start the application docker
 
+The input and output folders need to be specified.
 
 ```
-
+bash start-application-docker.sh $INPUT $OUTPUT
 ```
 
-### Process the data
+### Process data using the docker application
 
-docker exec -it rfv_predict bash start.sh
+```
+docker exec -it rfv_predict bash process.sh
+```
 
-## Data generation - only required to regenerate the data
+## Data generation - required if data needs to be updated
 
-```bash
 
-Download the UMLS Metathesaurus and install.
+Download the UMLS Metathesaurus and install, we have tested UMLS 2020AA.
 When installing the UMLS, you need to ensure that SNOMED CT is installed.
 
 ```
