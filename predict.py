@@ -22,23 +22,44 @@ class Category():
 
     def get_ids(self, term):
         ids = []
-
+    
         answer = requests.request('GET', "{}/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-default;automapstrategy-MML&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(
             self.ontoserver_prefix, urllib.parse.quote(term))).json()
-
+    
         #print ("{}/fhir/ConceptMap/$translate?url=http://ontoserver.csiro.au/fhir/ConceptMap/automapstrategy-seq;automapstrategy-default;automapstrategy-MML&system=http://ontoserver.csiro.au/fhir/CodeSystem/codesystem-terms&code={}&target=http://snomed.info/sct?fhir_vs".format(
         #    self.ontoserver_prefix, urllib.parse.quote(term)))
-
+    
         print(term, answer)
         for i in answer['parameter']:
             if i['name'] == 'match':
                 for c in i['part']:
                     if c['name'] == 'concept':
                         ids.append(c['valueCoding']['code'])
-
+    
         return ids
 
+    def get_metamap_parts(self, term):
+
+        return ['levothyroxine sodium', 'Patient referral']
+
+
     def get_category(self, term):
+        (term, category) = self.get_category_ontoserver(term)
+
+        if category is not None:
+            return (term, category)
+        else:
+            for mterm in self.get_metamap_parts(term):
+                (term, category) = self.get_category_ontoserver(mterm)
+
+                if category is not None:
+                    return (term, category)
+
+
+        return (term, None)
+
+
+    def get_category_ontoserver(self, term):
         term = str(term)
 
         if term.lower() in self.predefined:
@@ -60,4 +81,5 @@ if __name__ == "__main__":
     predict = Category("http://0.0.0.0:8080")
 
     for i in tqdm(range(1)):
-        print(predict.get_category('glaucoma'))
+        print(predict.get_category('18/12 immunisation'))
+        #print(predict.get_category('glaucoma'))
