@@ -24,7 +24,11 @@ Update the SNOMED CT ontology
 docker exec ontoserver /index.sh -s sctau
 ```
 
-### Application docker
+### Build the application docker
+
+```
+docker build  --no-cache -t readbiomed/mcri_rfv .
+```
 
 ### Start the application docker
 
@@ -34,7 +38,7 @@ The input and output folders need to be specified.
 bash start-application-docker.sh $INPUT $OUTPUT
 ```
 
-### Process data using the docker application
+### Process data using the application in docker
 
 ```
 docker exec -it rfv_predict bash process.sh
