@@ -2,6 +2,43 @@
 
 ## Installation
 
+### Set up the network
+
+```
+docker network create  --driver=bridge   --subnet=100.100.0.0/16   --gateway=100.100.0.1  rfv_ontoserver
+```
+
+### Ontoserver
+
+Start the ontoserver docker
+
+```
+docker-compose up -d -f docker-compose-ontoserver.yml
+```
+
+Update the SNOMED CT ontology
+
+```
+docker exec ontoserver /index.sh -s sctau
+```
+
+### Application docker
+
+### Start the application docker
+
+
+```
+
+```
+
+### Process the data
+
+docker exec -it rfv_predict bash start.sh
+
+## Data generation - only required to regenerate the data
+
+```bash
+
 Download the UMLS Metathesaurus and install.
 When installing the UMLS, you need to ensure that SNOMED CT is installed.
 

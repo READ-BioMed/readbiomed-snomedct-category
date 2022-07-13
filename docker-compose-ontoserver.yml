@@ -1,0 +1,36 @@
+    version: '2'
+    volumes:
+      onto:
+        driver: local
+      pgdata:
+        driver: local
+    services:
+      db:
+        image: postgres:12
+        volumes:
+          - pgdata:/var/lib/postgresql/data
+        environment:
+          - POSTGRES_HOST_AUTH_METHOD=trust
+        networks:
+          - rfv_ontoserver
+      ontoserver:
+        networks:
+          rfv_ontoserver:
+            ipv4_address: 100.100.0.4
+        image: quay.io/aehrc/ontoserver:ctsa-6
+        container_name: ontoserver
+        depends_on:
+          - db
+        ports:
+          - "8080:8080"
+          - "8443:8443"
+        environment:
+          - authentication.oauth.endpoint.client_id.0=36ne1dvnhuqtrs0r2ocg9k78cp
+          - authentication.oauth.endpoint.client_secret.0=ku3l9se5eabi5a60vp9nb307v3ln5oqn8aatc77s41mcrpghob6
+          - JAVA_OPTS=-Xmx4G
+          - ONTOSERVER_INSECURE=true
+        volumes:
+          - onto:/var/onto
+    networks:
+        rfv_ontoserver:
+            external: true

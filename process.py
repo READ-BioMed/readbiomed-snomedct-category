@@ -8,7 +8,33 @@ import xlsxwriter
 
 from predict import Category
 
-category = Category(ontoserver_prefix="http://0.0.0.0:8080")
+#category = Category(ontoserver_prefix="http://0.0.0.0:8080")
+category = Category(ontoserver_prefix="http://100.100.0.4:8080")
+
+
+category_name = {
+    "Results reference set for GP/FP reason for encounter": "Results / Plans",
+    "Active immunisation": "Immunisation",
+    "Respiratory tract infection": "Infection- Resp",
+    "Traumatic AND/OR non-traumatic injury": "Injury / Musculoskeletal",
+    "Abdominal pain": "Abdominal pain",
+    "pain": "Pain syndrome",
+    "Constipation": "Constipation / Bowels",
+    "Eye / vision finding": "Ophthalmology",
+    "Ear, nose and throat finding": "ENT - other",
+    "Asthma": "Asthma and Allergy",
+    "Disorder of skin": "Dermatology",
+    "Mental illness": "Mental Health",
+    "Female genitalia finding": "Gynae.",
+    "Gastroesophageal reflux disease": "Reflux / Colic",
+    "Poor sleep pattern": "Constitutional",
+    "Infection": "Infection - other",
+                 "Development disorder": "Developmental / Behavioural"
+}
+
+
+def map_category_name(category):
+    return category_name[category] if category in category_name else category
 
 
 def write_results(mappings, xlsx_file_name='./output/prediction.xlsx'):
@@ -34,17 +60,23 @@ def write_results(mappings, xlsx_file_name='./output/prediction.xlsx'):
                 column = 1
 
                 if type(categories) is str:
-                    worksheet.write(row, column, categories.split("|")[1])
+                    worksheet.write(
+                        row, column, map_category_name(categories.split("|")[1].split("#")[0]))
                 else:
                     for c in categories:
-                        worksheet.write(row, column, c[0].split("|")[1])
+                        worksheet.write(
+                            row, column, map_category_name(c[0].split("|")[1].split("#")[0]))
                         column += 1
 
 
 if __name__ == "__main__":
-    df = pd.read_csv('./input/Reasons_Freq.csv')
+    #df = pd.read_csv('./input/Reasons_Freq.csv')
+    df = pd.read_csv('./input/Reasons_Freq.csv.orig')
+    #df = pd.read_csv('/MCRI/input/Reasons_Freq.csv')
 
+    print('Annotating terms...')
     mappings = process_map(category.get_category, df.Var1,
-                           max_workers=5, chunksize=10)
+                           max_workers=1, chunksize=10)
 
+    print('Writing results to xlsx file')
     write_results(mappings)
