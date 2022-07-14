@@ -1,4 +1,4 @@
-FROM ubuntu:bionic
+FROM --platform=linux/amd64 ubuntu:bionic
 
 ENV HOME_MCRI "/MCRI"
 ENV METAMAP "/metamap"
@@ -21,7 +21,7 @@ RUN pip3 install xlsxwriter requests jsonpickle tqdm pandas
 
 COPY public_mm_linux_main_2020.tar.bz2 $METAMAP
 WORKDIR $METAMAP
-RUN tar xvfj public_mm_linux_main_2020.tar.bz2
+RUN tar xvfj public_mm_linux_main_2020.tar.bz2 
 
 RUN git clone https://github.com/READ-BioMed/readbiomed-snomedct-category.git $HOME_MCRI
 
@@ -35,3 +35,5 @@ WORKDIR $METAMAP/public_mm
 RUN /bin/bash -c 'sh ../setup-metamap.sh'
 RUN chmod +x $HOME_MCRI/process.sh
 WORKDIR $HOME_MCRI
+
+RUN rm $METAMAP/public_mm_linux_main_2020.tar.bz2
