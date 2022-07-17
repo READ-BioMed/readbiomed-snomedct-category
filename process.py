@@ -37,7 +37,7 @@ def map_category_name(category):
 
 
 def write_results(mappings, xlsx_file_name='./output/prediction.xlsx'):
-    with xlsxwriter.Workbook(xlsx_file_name, nan_inf_to_errors=True) as workbook:
+    with xlsxwriter.Workbook(xlsx_file_name) as workbook:
 
         worksheet = workbook.add_worksheet("Prediction")
 
