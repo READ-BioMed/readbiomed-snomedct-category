@@ -37,7 +37,7 @@ def map_category_name(category):
 
 
 def write_results(mappings, xlsx_file_name='./output/prediction.xlsx'):
-    with xlsxwriter.Workbook(xlsx_file_name) as workbook:
+    with xlsxwriter.Workbook(xlsx_file_name, nan_inf_to_errors=True) as workbook:
 
         worksheet = workbook.add_worksheet("Prediction")
 
@@ -53,19 +53,22 @@ def write_results(mappings, xlsx_file_name='./output/prediction.xlsx'):
         for term, categories in tqdm(mappings, total=len(mappings)):
             row += 1
 
-            worksheet.write(row, 0, term)
+            try:
+                worksheet.write(row, 0, str(term))
 
-            if categories is not None:
-                column = 1
+                if categories is not None:
+                    column = 1
 
-                if type(categories) is str:
-                    worksheet.write(
-                        row, column, map_category_name(categories.split("|")[1].split("#")[0]))
-                else:
-                    for c in categories:
+                    if type(categories) is str:
                         worksheet.write(
-                            row, column, map_category_name(c[0].split("|")[1].split("#")[0]))
-                        column += 1
+                            row, column, map_category_name(categories.split("|")[1].split("#")[0]))
+                    else:
+                        for c in categories:
+                            worksheet.write(
+                                row, column, map_category_name(c[0].split("|")[1].split("#")[0]))
+                            column += 1
+            except:
+                print("Error with term {}".format(term))
 
 
 if __name__ == "__main__":
@@ -75,10 +78,10 @@ if __name__ == "__main__":
 
     print('Annotating terms...')
 
-    mappings=[]
+    mappings = []
 
     for term in tqdm(df.Var1):
-      mappings.append(category.get_category(term))
+        mappings.append(category.get_category(term))
 
     category.save_cache()
 
